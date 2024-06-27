@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"path/filepath"
 
 	"gopkg.in/yaml.v2"
 )
@@ -16,7 +17,13 @@ type LLMEngineConfig struct {
 }
 
 func Load(filename string) (*Config, error) {
-	data, err := os.ReadFile(filename)
+	// Expand the tilde to the user's home directory
+	absolutePath, err := expandTilde(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := os.ReadFile(absolutePath)
 	if err != nil {
 		return nil, err
 	}
@@ -28,4 +35,17 @@ func Load(filename string) (*Config, error) {
 	}
 
 	return &config, nil
+}
+
+func expandTilde(path string) (string, error) {
+	if len(path) == 0 || path[0] != '~' {
+		return path, nil // Path doesn't start with '~', return as is
+	}
+
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err // Error getting home directory
+	}
+
+	return filepath.Join(homeDir, path[1:]), nil
 }
