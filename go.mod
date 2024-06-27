@@ -2,10 +2,7 @@ module github.com/robinmin/askllm
 
 go 1.22.0
 
-toolchain go1.22.3
-
 require (
-	github.com/JohannesKaufmann/html-to-markdown v1.6.0
 	github.com/charmbracelet/glamour v0.7.0
 	github.com/tmc/langchaingo v0.1.12
 	gopkg.in/yaml.v2 v2.4.0
@@ -21,9 +18,7 @@ require (
 	cloud.google.com/go/iam v1.1.7 // indirect
 	cloud.google.com/go/longrunning v0.5.7 // indirect
 	cloud.google.com/go/vertexai v0.10.0 // indirect
-	github.com/PuerkitoBio/goquery v1.9.2 // indirect
 	github.com/alecthomas/chroma/v2 v2.8.0 // indirect
-	github.com/andybalholm/cascadia v1.3.2 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/dlclark/regexp2 v1.10.0 // indirect
@@ -68,4 +63,5 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240509183442-62759503f434 // indirect
 	google.golang.org/grpc v1.64.0 // indirect
 	google.golang.org/protobuf v1.34.1 // indirect
+	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 )
