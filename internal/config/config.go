@@ -8,13 +8,13 @@ import (
 )
 
 const (
-	VERSION = "0.0.6"
+	VERSION = "0.0.7"
 )
 
 type Config struct {
 	Sys struct {
-		LogPath  string `yaml:"log_path",omitempty,default:""`
-		LogLevel string `yaml:"log_level",omitempty,default:"INFO"`
+		LogPath  string `yaml:"log_path,omitempty"`
+		LogLevel string `yaml:"log_level,omitempty"`
 	} `yaml:"sys"`
 	LLMEngines map[string]LLMEngineConfig `yaml:"llm_engines"`
 }
@@ -22,8 +22,8 @@ type Config struct {
 type LLMEngineConfig struct {
 	APIKey        string `yaml:"api_key"`
 	Model         string `yaml:"model"`
-	BaseURL       string `yaml:"base_url",omitempty`
-	OrgnizationId string `yaml:"organization_id",omitempty` // So far, only avaliable for chatgpt
+	BaseURL       string `yaml:"base_url,omitempty"`
+	OrgnizationId string `yaml:"organization_id,omitempty"` // So far, only avaliable for chatgpt
 }
 
 func Load(filename string) (*Config, error) {
@@ -39,8 +39,7 @@ func Load(filename string) (*Config, error) {
 	}
 
 	var config Config
-	err = yaml.Unmarshal(data, &config)
-	if err != nil {
+	if err = yaml.Unmarshal(data, &config); err != nil {
 		return nil, err
 	}
 
