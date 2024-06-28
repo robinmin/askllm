@@ -7,6 +7,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const (
+	VERSION = "0.0.1"
+)
+
 type Config struct {
 	LLMEngines map[string]LLMEngineConfig `yaml:"llm_engines"`
 }

@@ -1,6 +1,6 @@
 #### askllm
 
-This is a tint command line tool for you to execute LLM inquiry with prompt or prompt file. Be fore you can use it, please use the following command to copy the config file into your home directory:
+This is a tiny command line tool for you to execute LLM inquiry with prompt or prompt file. Be fore you can use it, please use the following command to copy the config file into your home directory:
 ```bash
 cp config.example.yaml ~/.askllm/config.yaml
 ```

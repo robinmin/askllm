@@ -13,7 +13,7 @@ before:
     # You may remove this if you don't use go modules.
     - go mod tidy
     # you may remove this if you don't need go generate
-    - go generate ./...
+    # - go generate ./...
 
 builds:
   - env:
@@ -44,3 +44,29 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+
+brews:
+  - tap:
+      owner: robinmin
+      name: homebrew-tap
+    folder: Formula
+    commit_author:
+      name: robinmin
+      email: minlongbing@gmail.com
+    homepage: https://github.com/robinmin/askllm
+    description: >-
+      Askllm is a tiny command line tool for you to execute LLM inquiry with prompt or prompt file.
+    license: "Apache License 2.0"
+
+scoop:
+  bucket:
+    owner: robinmin
+    name: scoop-bucket
+  commit_author:
+    name: goreleaserbot
+    email: bot@goreleaser.com
+  folder: bucket
+  homepage: https://github.com/robinmin/askllm
+  description: >-
+    Askllm is a tiny command line tool for you to execute LLM inquiry with prompt or prompt file.
+  license: "Apache License 2.0"
