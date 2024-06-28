@@ -12,12 +12,18 @@ const (
 )
 
 type Config struct {
+	Sys struct {
+		LogPath  string `yaml:"log_path",omitempty,default:""`
+		LogLevel string `yaml:"log_level",omitempty,default:"INFO"`
+	} `yaml:"sys"`
 	LLMEngines map[string]LLMEngineConfig `yaml:"llm_engines"`
 }
 
 type LLMEngineConfig struct {
-	APIKey string `yaml:"api_key"`
-	Model  string `yaml:"model"`
+	APIKey        string `yaml:"api_key"`
+	Model         string `yaml:"model"`
+	BaseURL       string `yaml:"base_url",omitempty`
+	OrgnizationId string `yaml:"organization_id",omitempty` // So far, only avaliable for chatgpt
 }
 
 func Load(filename string) (*Config, error) {

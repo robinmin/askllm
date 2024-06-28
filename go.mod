@@ -2,6 +2,8 @@ module github.com/robinmin/askllm
 
 go 1.22
 
+// toolchain go1.22.4
+
 require (
 	github.com/charmbracelet/glamour v0.7.0
 	github.com/tmc/langchaingo v0.1.12

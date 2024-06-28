@@ -17,7 +17,13 @@ type Ollama struct {
 
 func NewOllama(model string, cfg config.LLMEngineConfig) (*Ollama, error) {
 	ctx := context.Background()
-	llm, err := ollama.New(ollama.WithModel(model))
+	var err error
+	var llm *ollama.LLM
+	if cfg.BaseURL != "" {
+		llm, err = ollama.New(ollama.WithModel(model), ollama.WithServerURL(cfg.BaseURL))
+	} else {
+		llm, err = ollama.New(ollama.WithModel(model))
+	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize Ollama: %w", err)
 	}

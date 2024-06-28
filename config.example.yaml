@@ -1,10 +1,16 @@
+sys:
+  log_path:
+  log_level: INFO
 llm_engines:
   chatgpt:
     api_key: 
     model: gpt-3.5-turbo
+    # base_url: https://api.openai.com/v1
+    # organization_id:
   gemini:
     api_key: 
     model: gemini-1.5-flash
   ollama:
     api_key: 
     model: gemma2
+    # base_url: http://127.0.0.1:11434

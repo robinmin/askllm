@@ -2,7 +2,7 @@ package output
 
 import (
 	"fmt"
-	"log"
+	log "log/slog"
 	"os"
 
 	"github.com/charmbracelet/glamour"
@@ -10,6 +10,7 @@ import (
 
 func HandleOutput(outputFile, content string) error {
 	if outputFile == "" || outputFile == "stdout" {
+		logger := log.Default()
 		// show markdown in console
 		r, _ := glamour.NewTermRenderer(
 			// detect background color and pick either the default dark or light theme
@@ -19,7 +20,8 @@ func HandleOutput(outputFile, content string) error {
 		)
 		out, err := r.Render(content)
 		if err != nil {
-			log.Fatal(err)
+			logger.Error(err.Error())
+			return err
 		}
 		fmt.Println(out)
 		return nil

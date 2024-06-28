@@ -18,17 +18,18 @@ type ChatGPT struct {
 }
 
 func NewChatGPT(model string, cfg config.LLMEngineConfig) (*ChatGPT, error) {
-	// os.Setenv("OPENAI_API_KEY", cfg.APIKey)
-	// os.Setenv("OPENAI_MODEL", model)
-	// os.Setenv("OPENAI_BASE_URL", "")
-	// os.Setenv("OPENAI_API_BASE", "")
-	// os.Setenv("OPENAI_ORGANIZATION", "")
-
 	ctx := context.Background()
-	llm, err := openai.New(
-		openai.WithToken(cfg.APIKey),
-		openai.WithModel(model),
-	)
+	var llm llms.Model
+	var err error
+	if cfg.OrgnizationId != "" {
+		llm, err = openai.New(
+			openai.WithToken(cfg.APIKey),
+			openai.WithModel(model),
+			openai.WithOrganization(cfg.OrgnizationId),
+		)
+	} else {
+		llm, err = openai.New(openai.WithToken(cfg.APIKey), openai.WithModel(model))
+	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize ChatGPT: %w", err)
 	}
@@ -41,7 +42,6 @@ func NewChatGPT(model string, cfg config.LLMEngineConfig) (*ChatGPT, error) {
 }
 
 func (c *ChatGPT) Query(prompt string) (string, error) {
-	// result, err := c.llm.Call(c.context, prompt)
 	result, err := llms.GenerateFromSinglePrompt(
 		c.context, c.llm, prompt,
 		llms.WithTemperature(0.2),
