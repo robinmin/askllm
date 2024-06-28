@@ -19,7 +19,10 @@ clean: ## Remove object files and binary
 	rm -f $(BINARY_NAME)
 
 release: ## Build and release a new version
-	goreleaser release --snapshot --clean --skip=publish
+	goreleaser release --snapshot --clean
+
+release-check: ## Build and release a new version
+	goreleaser check
 
 help: ## Show this help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "${YELLOW}%-16s${GREEN}%s${RESET}\n", $$1, $$2}' $(MAKEFILE_LIST)
