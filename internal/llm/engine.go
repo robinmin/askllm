@@ -19,6 +19,8 @@ func NewEngine(engineType, model string, cfg *config.Config) (Engine, error) {
 		return NewGemini(model, cfg.LLMEngines["gemini"])
 	case "ollama":
 		return NewOllama(model, cfg.LLMEngines["ollama"])
+	case "claude":
+		return NewClaude(model, cfg.LLMEngines["claude"])
 	default:
 		return nil, fmt.Errorf("unsupported LLM engine: %s", engineType)
 	}

@@ -14,3 +14,7 @@ llm_engines:
     api_key: 
     model: gemma2
     # base_url: http://127.0.0.1:11434
+  claude:
+    api_key: 
+    model: claude-3-sonnet-20240229
+    # base_url:

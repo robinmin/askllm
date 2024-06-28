@@ -5,7 +5,7 @@ This is a tiny command line tool for you to execute LLM inquiry with prompt or p
 cp config.example.yaml ~/.askllm/config.yaml
 ```
 
-Please DO add you `api_key` to enable the inquiry. So far this tool only support the following LLM engines: chatgpt, gemini, ollama. The others will be added going forward.
+Please DO add you `api_key` to enable the inquiry. So far this tool only support the following LLM engines: chatgpt, gemini, ollama and claude. The others will be added soon.
 
 Then you can use the following command to execute the inquiry:
 ```bash

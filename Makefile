@@ -14,6 +14,8 @@ run: ## Run the application
 	$(info ******************** Run the application ******************** $(VERSION))
 	go run ./cmd/askllm/main.go "hello, llm"
 #	go run ./cmd/askllm/main.go -e chatgpt -m gpt-3.5-turbo "hello, llm"
+#	go run ./cmd/askllm/main.go -e gemini -m gemini-1.5-flash "hello, llm"
+#	go run ./cmd/askllm/main.go -e claude -m claude-3-sonnet-20240229 "hello, llm"
 
 test: ## Run tests
 	go test -v ./...
@@ -41,6 +43,10 @@ release: ## Build and release a new version
 check: ## Check if the release is valid
 	$(info ******************** Check if the release is valid ******************** $(VERSION))
 	goreleaser check
+
+tag: ## Create a new tag
+	$(info ******************** Create a new tag ******************** $(VERSION))
+	git tag v$(VERSION) && git push origin v$(VERSION)
 
 help: ## Show this help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "${YELLOW}%-16s${GREEN}%s${RESET}\n", $$1, $$2}' $(MAKEFILE_LIST)
