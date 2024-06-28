@@ -6,7 +6,7 @@
 # yaml-language-server: $schema=https://goreleaser.com/static/schema.json
 # vim: set ts=2 sw=2 tw=0 fo=cnqoj
 
-version: 2
+version: 1
 
 before:
   hooks:
@@ -18,6 +18,7 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
+    main: cmd/askllm/main.go
     goos:
       - linux
       - windows
@@ -46,10 +47,10 @@ changelog:
       - "^test:"
 
 brews:
-  - tap:
+  - repository:
       owner: robinmin
       name: homebrew-tap
-    folder: Formula
+    directory: Formula
     commit_author:
       name: robinmin
       email: minlongbing@gmail.com
@@ -58,15 +59,15 @@ brews:
       Askllm is a tiny command line tool for you to execute LLM inquiry with prompt or prompt file.
     license: "Apache License 2.0"
 
-scoop:
-  bucket:
-    owner: robinmin
-    name: scoop-bucket
-  commit_author:
-    name: goreleaserbot
-    email: bot@goreleaser.com
-  folder: bucket
-  homepage: https://github.com/robinmin/askllm
-  description: >-
-    Askllm is a tiny command line tool for you to execute LLM inquiry with prompt or prompt file.
-  license: "Apache License 2.0"
+scoops:
+  - repository:
+      owner: robinmin
+      name: scoop-bucket
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    directory: bucket
+    homepage: https://github.com/robinmin/askllm
+    description: >-
+      Askllm is a tiny command line tool for you to execute LLM inquiry with prompt or prompt file.
+    license: "Apache License 2.0"

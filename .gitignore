@@ -41,3 +41,5 @@ bin/
 
 # Output files
 output*.md
+
+dist/
