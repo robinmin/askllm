@@ -8,8 +8,8 @@ build: ## Build the binary
 	go build -o $(BINARY_NAME) ./cmd/askllm
 
 run: ## Run the binary
-#	go run ./cmd/askllm/main.go "hello, llm"
-	go run ./cmd/askllm/main.go -e chatgpt -m gpt-3.5-turbo "hello, llm"
+	go run ./cmd/askllm/main.go "hello, llm"
+#	go run ./cmd/askllm/main.go -e chatgpt -m gpt-3.5-turbo "hello, llm"
 
 test: ## Run tests
 	go test -v ./...
