@@ -1,6 +1,6 @@
 module github.com/robinmin/askllm
 
-go 1.22.0
+go 1.22
 
 require (
 	github.com/charmbracelet/glamour v0.7.0

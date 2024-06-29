@@ -14,7 +14,7 @@ run: ## Run the application
 	$(info ******************** Run the application ******************** $(VERSION))
 	go run ./cmd/askllm/main.go "hello, llm"
 #	go run ./cmd/askllm/main.go -e chatgpt -m gpt-3.5-turbo "hello, llm"
-#	go run ./cmd/askllm/main.go -e gemini -m gemini-1.5-flash "hello, llm"
+#	go run ./cmd/askllm/main.go -e gemini -m gemini-1.5-pro "hello, llm"
 #	go run ./cmd/askllm/main.go -e claude -m claude-3-sonnet-20240229 "hello, llm"
 
 test: ## Run tests
