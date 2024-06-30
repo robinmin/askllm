@@ -2,8 +2,11 @@ package prompt
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"regexp"
 	"strings"
 
 	// "fmt"
@@ -28,22 +31,6 @@ type PromptTemplate struct {
 		Validation string `yaml:"validation"` // Regular expression for validation
 	} `yaml:"variables"` // List of variables used by the template
 	Template string `yaml:"template"` //  The template string to be used for analysis
-}
-
-func GetPrompt(promptFile string, input string) (string, error) {
-	log.Info(input)
-	if promptFile != "" {
-		return readPromptFile(promptFile)
-	}
-	return input, nil
-}
-
-func readPromptFile(filename string) (string, error) {
-	data, err := os.ReadFile(filename)
-	if err != nil {
-		return "", err
-	}
-	return string(data), nil
 }
 
 func NewPromptTemplate(promptFile string) (*PromptTemplate, error) {
@@ -135,6 +122,22 @@ func (pt *PromptTemplate) GetPrompt(vars map[string]any) (string, error) {
 	return buffer.String(), nil
 }
 
+func getPlaintTextPrompt(promptFile string, input string) (string, error) {
+	log.Info(input)
+	if promptFile != "" {
+		return readPromptFile(promptFile)
+	}
+	return input, nil
+}
+
+func readPromptFile(filename string) (string, error) {
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
 func isValidFilePath(path string) bool {
 	_, err := os.Stat(path)
 	if err != nil {
@@ -145,4 +148,75 @@ func isValidFilePath(path string) bool {
 		return false
 	}
 	return true // Path exists (may not be a regular file)
+}
+
+func isQueryString(s string) bool {
+	// Check for presence of equals sign (=) and separator (&)
+	// return len(s) > 0 && strings.ContainsRune(s, '=') && strings.ContainsRune(s, '&')
+	// Regex pattern for key-value pairs with optional '&' separators
+	pattern := `^([a-zA-Z0-9_*]+)(?:\s*=\s*|)=([^&]*)?(&([a-zA-Z0-9_*]+)(?:\s*=\s*|)=([^&]*)*)*$`
+	return regexp.MustCompile(pattern).MatchString(s)
+}
+
+// parseQueryString parses a query string and returns a map[string]string or an error.
+func parseQueryString(queryString string) (map[string]any, error) {
+	if !isQueryString(queryString) {
+		return nil, fmt.Errorf("invalid query string format")
+	}
+
+	query, err := url.ParseQuery(queryString)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing query string: %w", err)
+	}
+
+	queryParams := make(map[string]any)
+	for key, values := range query {
+		queryParams[key] = values[0] // Assuming single value for each key
+	}
+
+	return queryParams, nil
+}
+
+func GeneratePrompt(promptFile string, payload string) (string, error) {
+	var promptText string
+	var err error
+
+	if len(promptFile) > 0 {
+		fileName := strings.ToLower(promptFile)
+		if strings.HasSuffix(fileName, ".yaml") || strings.HasSuffix(fileName, ".yml") {
+			// load prompt from prompt template YAML file
+			pt, err := NewPromptTemplate(promptFile)
+			if err != nil {
+				log.Error("Failed to create instance of PromptTemplate: " + err.Error())
+				return "", err
+			}
+
+			var vars map[string]any
+			if isQueryString(payload) {
+				vars, err = parseQueryString(payload)
+				if err != nil {
+					log.Error("Failed to unmarshal variables from query string: " + err.Error())
+					return "", err
+				}
+			}
+
+			promptText, err = pt.GetPrompt(vars)
+			if err != nil {
+				log.Error("Error getting prompt: " + err.Error())
+				return "", err
+			}
+		} else {
+			// load prompt from external file (compatible with old version)
+			promptText, err = getPlaintTextPrompt(promptFile, payload)
+			if err != nil {
+				log.Error("Error getting prompt: " + err.Error())
+				return "", err
+			}
+		}
+	} else {
+		// load prompt from command line directly
+		promptText = payload
+	}
+
+	return promptText, err
 }
