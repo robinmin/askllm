@@ -1,0 +1,50 @@
+id: prompt_yaml_golang_struct
+name: "Prompt To Gnerate Golang Struct Definition for YAML"
+description: "A tiny tool to generate golang struct definition based on YAML file content."
+author: "Robin Min"
+variables:
+  - name: "yaml_file"
+    vtype: "file"
+    otype: "text"
+    default: ""
+    validation: ""
+template: |
+  I have the following utility generaic function to load information from YAML file and dump the content into YAML file. 
+  ```golang
+  // LoadConfig: load information from YAML file
+  func LoadConfig[T any](yamlFile string) (*T, error) {
+  	data, err := os.ReadFile(yamlFile)
+  	if err != nil {
+  		return nil, err
+  	}
+  
+  	var config T
+  	err = yaml.Unmarshal(data, &config)
+  	if err != nil {
+  		return nil, err
+  	}
+  
+  	return &config, nil
+  }
+  
+  // SaveConfig: dump the content into YAML file
+  func SaveConfig[T any](cfg *T, yamlFile string) error {
+  	data, err := yaml.Marshal(cfg)
+  	if err != nil {
+  		return err
+  	}
+  
+  	err = os.WriteFile(yamlFile, data, 0o644)
+  	if err != nil {
+  		return err
+  	}
+  
+  	return nil
+  }
+  ```
+  
+  Now, I have a YAML file with following content. You need to generate a single and compound golang struct definition. So that I can call LoadConfig[T]() and SaveConfig[T]() with this new type for further action.
+  DO NOT forget to add inline comment for each field. Here's the yaml content:
+  ```YAML
+  {{ .yaml_file }}
+  ```
