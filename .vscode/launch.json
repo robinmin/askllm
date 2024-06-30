@@ -6,8 +6,8 @@
         "request": "launch",
         "mode": "debug",
         "program": "${workspaceFolder}/cmd/askllm/main.go",
-        // "envFile": "${workspaceFolder}/.env",
-        "args": ["-p", "/Users/minlongbing/Projects2/askllm/prompts/first_ai_template.yaml", "user_name=karl max"],
+        // "args": ["-p", "/Users/minlongbing/Projects2/askllm/prompts/first_ai_template.yaml", "user_name=karl max"],
+        "args": ["-p", "/Users/minlongbing/Projects2/askllm/prompts/prompt_yaml_golang_struct.yaml", "yaml_file=/Users/minlongbing/Projects2/askllm/config.example.yaml"],
         "showLog": true,
         "console": "integratedTerminal"
     }]

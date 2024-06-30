@@ -12,11 +12,12 @@ build: ## Build the binary
 
 run: ## Run the application
 	$(info ******************** Run the application ******************** $(VERSION))
-#	go run ./cmd/askllm/main.go hello, llm
+	go run ./cmd/askllm/main.go hello, llm
 #	go run ./cmd/askllm/main.go -e chatgpt -m gpt-3.5-turbo "hello, llm"
 #	go run ./cmd/askllm/main.go -e gemini -m gemini-1.5-pro "hello, llm"
 #	go run ./cmd/askllm/main.go -e claude -m claude-3-sonnet-20240229 "hello, llm"
-	go run ./cmd/askllm/main.go -p /Users/minlongbing/Projects2/askllm/prompts/first_ai_template.yaml user_name=karl max
+#	go run ./cmd/askllm/main.go -p /Users/minlongbing/Projects2/askllm/prompts/first_ai_template.yaml user_name=Elon Musk
+#	go run ./cmd/askllm/main.go -p /Users/minlongbing/Projects2/askllm/prompts/prompt_yaml_golang_struct.yaml yaml_file=/Users/minlongbing/Projects2/askllm/config.example.yaml
 
 test: ## Run tests
 	go test -v ./...
