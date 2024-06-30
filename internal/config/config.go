@@ -4,11 +4,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"gopkg.in/yaml.v2"
+	"github.com/robinmin/askllm/pkg/utils"
 )
 
 const (
-	VERSION = "0.0.8"
+	VERSION = "0.0.9"
 )
 
 type Config struct {
@@ -33,17 +33,7 @@ func Load(filename string) (*Config, error) {
 		return nil, err
 	}
 
-	data, err := os.ReadFile(absolutePath)
-	if err != nil {
-		return nil, err
-	}
-
-	var config Config
-	if err = yaml.Unmarshal(data, &config); err != nil {
-		return nil, err
-	}
-
-	return &config, nil
+	return utils.LoadConfig[Config](absolutePath)
 }
 
 func expandTilde(path string) (string, error) {

@@ -9,8 +9,6 @@ import (
 	"log/slog"
 )
 
-// var logFile *os.File
-
 func InitLogger(logpath string, app_id string, level string, verbose bool) (logFile *os.File) {
 	// Set the custom logger as the default
 	// var logFile *os.File

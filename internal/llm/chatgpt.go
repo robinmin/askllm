@@ -3,6 +3,7 @@ package llm
 import (
 	"context"
 	"fmt"
+
 	// "os"
 
 	"github.com/tmc/langchaingo/llms"
@@ -18,9 +19,13 @@ type ChatGPT struct {
 }
 
 func NewChatGPT(model string, cfg config.LLMEngineConfig) (*ChatGPT, error) {
-	ctx := context.Background()
 	var llm llms.Model
 	var err error
+
+	ctx := context.Background()
+	if model == "" {
+		model = cfg.Model
+	}
 	if cfg.OrgnizationId != "" {
 		if cfg.BaseURL != "" {
 			llm, err = openai.New(

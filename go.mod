@@ -4,6 +4,7 @@ go 1.22
 
 require (
 	github.com/charmbracelet/glamour v0.7.0
+	github.com/creasty/defaults v1.7.0
 	github.com/tmc/langchaingo v0.1.12
 	gopkg.in/yaml.v2 v2.4.0
 )

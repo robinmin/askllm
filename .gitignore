@@ -27,7 +27,7 @@ bin/
 .idea/
 
 # VS Code
-.vscode/
+# .vscode/
 
 # Environment variables
 .env

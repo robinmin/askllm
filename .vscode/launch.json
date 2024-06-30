@@ -1,0 +1,14 @@
+{
+    "version": "0.2.1",
+    "configurations": [{
+        "name": "Local Client",
+        "type": "go",
+        "request": "launch",
+        "mode": "debug",
+        "program": "${workspaceFolder}/cmd/askllm/main.go",
+        // "envFile": "${workspaceFolder}/.env",
+        "args": ["-p", "/Users/minlongbing/Projects2/askllm/prompts/first_ai_template.yaml", "user_name=karl max"],
+        "showLog": true,
+        "console": "integratedTerminal"
+    }]
+}

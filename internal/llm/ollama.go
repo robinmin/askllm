@@ -16,9 +16,13 @@ type Ollama struct {
 }
 
 func NewOllama(model string, cfg config.LLMEngineConfig) (*Ollama, error) {
-	ctx := context.Background()
 	var err error
 	var llm *ollama.LLM
+
+	ctx := context.Background()
+	if model == "" {
+		model = cfg.Model
+	}
 	if cfg.BaseURL != "" {
 		llm, err = ollama.New(ollama.WithModel(model), ollama.WithServerURL(cfg.BaseURL))
 	} else {

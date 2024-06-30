@@ -17,6 +17,9 @@ type Gemini struct {
 
 func NewGemini(model string, cfg config.LLMEngineConfig) (*Gemini, error) {
 	ctx := context.Background()
+	if model == "" {
+		model = cfg.Model
+	}
 	llm, err := googleai.New(ctx, googleai.WithAPIKey(cfg.APIKey))
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize Gemini: %w", err)

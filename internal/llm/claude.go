@@ -16,9 +16,13 @@ type Claude struct {
 }
 
 func NewClaude(model string, cfg config.LLMEngineConfig) (*Claude, error) {
-	ctx := context.Background()
 	var llm llms.Model
 	var err error
+
+	ctx := context.Background()
+	if model == "" {
+		model = cfg.Model
+	}
 	if cfg.BaseURL != "" {
 		llm, err = anthropic.New(anthropic.WithToken(cfg.APIKey), anthropic.WithModel(model), anthropic.WithBaseURL(cfg.BaseURL))
 	} else {

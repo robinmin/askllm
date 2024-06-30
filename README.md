@@ -32,9 +32,14 @@ Be fore you can use it, please use the following command to copy the config file
 mkdir ~/.askllm/ && cp config.example.yaml ~/.askllm/config.yaml
 ```
 
-Please DO add you `api_key` to enable the inquiries. So far this tool support the following LLM engines: chatgpt, gemini, ollama and claude. The others will be added soon.
+Please DO add you `api_key` to enable the inquiries. If you want to use ollama (by default), please do not forget to install it. Please refer to [here](https://github.com/ollama/ollama) for details. So far askllm only supports the following LLM engines:
+- chatgpt
+- gemini
+- ollama
+- claude.
+The others will be added soon.
 
-Then you can use the following command to execute the inquiry:
+Once everything is ready, then you can use the following command to ask whatever you want to know:
 ```bash
 askllm [-e chatgpt] [-m model] [-c config.yaml] [-p prompt_file.md] [-o output.md] [direct prompt instuctions]
 
@@ -54,5 +59,4 @@ askllm -e claude -m claude-3-sonnet-20240229 "hello, llm"
 
 For the details of command line options, please run `askllm --help` or `askllm [command] --help`.
 
-Do not forget to install ollama, if you want to use it. Please refer to [here](https://github.com/ollama/ollama) for details.
 
