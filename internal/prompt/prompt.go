@@ -13,6 +13,9 @@ import (
 	"os"
 	"text/template"
 
+	h2m "github.com/JohannesKaufmann/html-to-markdown"
+	"github.com/charmbracelet/glamour"
+
 	"github.com/robinmin/askllm/pkg/utils"
 	"github.com/robinmin/askllm/pkg/utils/log"
 )
@@ -68,10 +71,11 @@ func (pt *PromptTemplate) GetPrompt(vars map[string]any) (string, error) {
 	// replace value for all vtype=file/url with content if any
 	for _, v := range pt.Variables {
 		if strings.ToLower(v.Vtype) == "file" {
-			filePath, ok := defaults[v.Name].(string)
-			if ok && isValidFilePath(filePath) {
+			value, ok := defaults[v.Name].(string)
+			if ok && isValidFilePath(value) {
 				// Replace the variable with the file content
-				fileContent, err := os.ReadFile(filePath)
+				fileContent, err := os.ReadFile(value)
+				log.Infof("Fetch file from [%v]......", value)
 				if err == nil {
 					defaults[v.Name] = string(fileContent)
 				}
@@ -81,6 +85,7 @@ func (pt *PromptTemplate) GetPrompt(vars map[string]any) (string, error) {
 			value, ok := defaults[v.Name].(string)
 			if ok && len(value) > 0 {
 				// Load web content from the URL
+				log.Infof("Fetch web page from [%v]......", value)
 				resp, err := http.Get(value)
 				if err != nil {
 					log.Errorf("Failed to fetch URL %s: %v", value, err)
@@ -100,8 +105,34 @@ func (pt *PromptTemplate) GetPrompt(vars map[string]any) (string, error) {
 					log.Errorf("Failed to read response body from URL %s: %v", value, err)
 					continue
 				} else {
-					// Replace the variable with the web content
-					defaults[v.Name] = string(body)
+					// Check if the response is HTML
+					contentType := resp.Header.Get("Content-Type")
+					if strings.Contains(contentType, "text/html") {
+						// Convert HTML to Markdown
+						converter := h2m.NewConverter("", true, nil)
+						markdown, err := converter.ConvertString(string(body))
+						if err != nil {
+							log.Errorf("Failed to convert HTML to Markdown for URL %s: %v", value, err)
+							continue
+						}
+
+						// Render Markdown to plain text
+						renderer, _ := glamour.NewTermRenderer(
+							glamour.WithWordWrap(120),
+							glamour.WithAutoStyle(),
+						)
+						plainText, err := renderer.Render(markdown)
+						if err != nil {
+							log.Errorf("Failed to render Markdown to plain text for URL %s: %v", value, err)
+							continue
+						}
+
+						// Replace the variable with the plain text content
+						defaults[v.Name] = plainText
+					} else {
+						// Replace the variable with the web content
+						defaults[v.Name] = string(body)
+					}
 				}
 			}
 		}

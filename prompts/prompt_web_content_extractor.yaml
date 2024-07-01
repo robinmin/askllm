@@ -1,0 +1,18 @@
+id: prompt_web_content_extractor
+name: "Prompt to fetch the web content and summarize it"
+description: "A tiny tool to fetch the web content and summarize it."
+author: "Robin Min"
+variables:
+  - name: "content_url"
+    vtype: "url"
+    otype: "text"
+    default: ""
+    validation: ""
+template: |
+  Here comes the major content of a web page. I need you summarize it in original language and then translate it into Chinese.
+  You also need to list out the major points mentioned by the web page. Both the sumamry and key points will be shown in oroginal
+  langiage and Chinese. Here comes the web page content:
+  ```YAML
+  {{ .content_url }}
+  ```
+  Show me the summary and key points in both original language and Chinese.
