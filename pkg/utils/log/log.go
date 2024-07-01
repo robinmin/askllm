@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dusted-go/logging/prettylog"
 	"log/slog"
 )
 
@@ -35,7 +36,13 @@ func InitLogger(logpath string, app_id string, level string, verbose bool) (logF
 			slog.SetDefault(logger)
 		}
 	} else {
-		logger := slog.New(slog.NewTextHandler(os.Stdout, opts))
+		// logger := slog.New(slog.NewTextHandler(os.Stdout, opts))
+		prettyHandler := prettylog.NewHandler(&slog.HandlerOptions{
+			Level:       slog.LevelInfo,
+			AddSource:   false,
+			ReplaceAttr: nil,
+		})
+		logger := slog.New(prettyHandler)
 		slog.SetDefault(logger)
 	}
 	return logFile
