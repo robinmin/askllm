@@ -19,7 +19,7 @@ import (
 func main() {
 	// Define command-line flags
 	engine := flag.String("e", "ollama", "LLM engine (chatgpt, gemini, ollama)")
-	model := flag.String("m", "gemma2", "Model for the LLM engine")
+	model := flag.String("m", "", "Model for the LLM engine")
 	configFile := flag.String("c", "~/.askllm/config.yaml", "Configuration file")
 	promptFile := flag.String("p", "", "Prompt file")
 	outputFile := flag.String("o", "", "Output file")
