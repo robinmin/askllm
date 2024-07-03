@@ -1,5 +1,5 @@
 id: prompt_yaml_golang_struct
-name: "Prompt To Gnerate Golang Struct Definition for YAML"
+name: "Prompt To Generate Golang Struct Definition for YAML"
 description: "A tiny tool to generate golang struct definition based on YAML file content."
 author: "Robin Min"
 variables:
