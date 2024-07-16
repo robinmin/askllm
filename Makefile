@@ -50,5 +50,14 @@ tag: ## Create a new tag
 	$(info ******************** Create a new tag ******************** $(VERSION))
 	git tag v$(VERSION) && git push origin v$(VERSION)
 
+find-untested: ## Find untested source files
+	$(info ******************** Find untested source files ******************** $(VERSION))
+	@find cmd pkg -name "*.go" ! -name "*_test.go" | while read file; do \
+		base=$${file%.*}; \
+		if [ ! -f "$${base}_test.go" ]; then \
+			echo "askllm -e chatgpt -p prompts/prompt_generate_unittest_golang.yaml -v $$file"; \
+		fi; \
+	done
+
 help: ## Show this help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "${YELLOW}%-16s${GREEN}%s${RESET}\n", $$1, $$2}' $(MAKEFILE_LIST)

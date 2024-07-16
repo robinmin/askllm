@@ -1,5 +1,6 @@
 {
     "gopls": {
-    "build.allowModfileModifications": true
-    }
+    // "build.allowModfileModifications": true
+    },
+    "go.toolsManagement.checkForUpdates":"off"
 }

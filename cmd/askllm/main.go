@@ -4,9 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"strings"
-
-	// "os"
-
 	"time"
 
 	"github.com/robinmin/askllm/internal/config"
@@ -42,15 +39,6 @@ func main() {
 		log.Debug(*configFile)
 	}
 
-	log.Info("Starting askllm...(engine: " + *engine + ", model: " + *model + " @ " + config.VERSION + ")")
-
-	// Initialize LLM engine
-	llmEngine, err := llm.NewEngine(*engine, *model, cfg)
-	if err != nil {
-		log.Error("Error initializing LLM engine: " + err.Error())
-		return
-	}
-
 	// Get prompt
 	// currentDir, err := os.Getwd()
 	// if err != nil {
@@ -59,8 +47,18 @@ func main() {
 	// }
 	// log.Infof("currentDir = %v", currentDir)
 
-	// load prompt from external file (compatible with old version)
+	log.Info("Starting askllm...(engine: " + *engine + ", model: " + *model + " @ " + config.VERSION + ")")
 	payload := strings.Join(flag.Args(), " ")
+	startTime := time.Now()
+
+	// Initialize LLM engine
+	llmEngine, err := llm.NewEngine(*engine, *model, cfg)
+	if err != nil {
+		log.Error("Error initializing LLM engine: " + err.Error())
+		return
+	}
+
+	// load prompt from external file (compatible with old version)
 	promptText, err := prompt.GeneratePrompt(*promptFile, payload)
 	if err != nil {
 		log.Error("Error getting prompt: " + err.Error())
@@ -68,13 +66,11 @@ func main() {
 	}
 
 	// Query LLM
-	startTime := time.Now()
 	response, err := llmEngine.Query(promptText)
 	if err != nil {
 		log.Error("Error querying LLM: " + err.Error())
 		return
 	}
-	elapsedTime := time.Since(startTime)
 
 	// Handle output
 	if err := output.HandleOutput(*outputFile, response); err != nil {
@@ -82,5 +78,6 @@ func main() {
 		return
 	}
 
+	elapsedTime := time.Since(startTime)
 	log.Info(fmt.Sprintf("============== DONE ==============(%s)", elapsedTime))
 }

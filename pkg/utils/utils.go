@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/creasty/defaults"
 	"gopkg.in/yaml.v2"
@@ -44,5 +46,43 @@ func SaveConfig[T any](cfg *T, yamlFile string) error {
 		return err
 	}
 
+	return nil
+}
+
+// WriteTempFile creates a temporary file with the given name prefix,
+// writes the provided data to it, and returns the full file path.
+// The caller is responsible for calling CleanupTempFile when done.
+func WriteTempFile(fileNamePrefix string, data []byte) (string, error) {
+	// Create a temporary file
+	tempFile, err := os.CreateTemp("", fileNamePrefix)
+	if err != nil {
+		return "", fmt.Errorf("error creating temporary file: %w", err)
+	}
+	// defer tempFile.Close()
+	defer func() {
+		_ = tempFile.Close()
+	}()
+
+	// Write data to the file
+	if _, err := tempFile.Write(data); err != nil {
+		return "", fmt.Errorf("error writing to temporary file: %w", err)
+	}
+
+	// Get the full file path
+	fullPath, err := filepath.Abs(tempFile.Name())
+	if err != nil {
+		return "", fmt.Errorf("error getting absolute file path: %w", err)
+	}
+
+	return fullPath, nil
+}
+
+// CleanupTempFile removes the specified temporary file.
+// It's safe to call this function multiple times on the same file.
+func CleanupTempFile(fileName string) error {
+	err := os.Remove(fileName)
+	if err != nil && !os.IsNotExist(err) {
+		return fmt.Errorf("error removing temporary file: %w", err)
+	}
 	return nil
 }

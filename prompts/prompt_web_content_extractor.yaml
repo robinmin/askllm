@@ -9,10 +9,12 @@ variables:
     default: ""
     validation: ""
 template: |
-  Here comes the major content of a web page. I need you summarize it in original language and then translate it into Chinese.
-  You also need to list out the major points mentioned by the web page. Both the sumamry and key points will be shown in oroginal
+  Here comes the major content of a web page. I need you provide a concise summary in original language and then translate it into Chinese.
+  You also need to list out the major points mentioned by the web page. Both the summary and key points will be listed in oroginal
   langiage and Chinese. Here comes the web page content:
+
   ```YAML
   {{ .content_url }}
   ```
+  
   Show me the summary and key points in both original language and Chinese.
