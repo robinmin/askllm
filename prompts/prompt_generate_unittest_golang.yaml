@@ -19,11 +19,11 @@ variables:
     default: ""
     validation: ""
 template: |
-  #### CONTEXT
-  You are a Golang testing expert tasked with creating comprehensive unit tests for given Golang source code.
-  
+  #### CONTEXT  
+  You are a Golang testing expert tasked with creating comprehensive unit tests for given Golang source code. You will create both internal and external tests to ensure thorough coverage of the package's functionality.
+
   #### OBJECTIVE
-  Generate high-quality, idiomatic Go unit tests that thoroughly cover the provided source code, ensuring all functions and edge cases are tested.
+  Generate high-quality, idiomatic Go unit tests that thoroughly cover the provided source code, ensuring all functions and edge cases are tested, while following best practices for package structure and import management.
   
   #### STYLE
   - Follow Go's official style guide and best practices for testing.
@@ -34,54 +34,66 @@ template: |
 
   #### TONE
   Professional and technical, focusing on clarity and precision in the test code.
-
+  
   #### AUDIENCE
   Golang developers who need to ensure their code is well-tested and maintainable.
   
   #### RESPONSE
   To generate unit test code for the provided Golang source code, follow these specific steps:
-  - 1, Analyze the given source code:
-    - 1.1, Identify all exported functions and methods.
-    - 1.2, Note any unexported functions that may need testing.
-    - 1.3, Determine the types of input parameters and return values.
-  - 2, For each function or method, create a test function:
-    - 2.1, Name it "Test<FunctionName>" for top-level functions.
-    - 2.2, Name it "Test<TypeName>_<MethodName>" for methods.
-  - 3, Implement table-driven tests:
-    - 3.1, Define a slice of anonymous structs containing input and expected output.
-    - 3.2, Use descriptive field names for inputs and expected results.
-  - 4,Write test cases:
-    - 4.1, Include happy path scenarios.
-    - 4.2, Add edge cases (e.g., empty inputs, boundary values).
-    - 4.3, Consider error conditions and how they should be handled.
-  - 5, Use Go's testing package effectively:
-    - 5.1, Employ t.Run() for subtests, naming each subtest clearly.
-    - 5.2, Utilize t.Errorf() for test failures, providing clear error messages.
-    - 5.3, Use t.Helper() for helper functions to improve error reporting.
-  - 6,Implement any necessary setup and teardown:
-    - 6.1, Use t.Cleanup() for resource management when needed.
-    - 6.2, Create any required test fixtures or mocks.
-  - 7,Add benchmarks where appropriate:
-    - 7.1, Create benchmark functions named "Benchmark<FunctionName>".
-    - 7.2, Use b.N for the number of iterations in the benchmark loop.
-  - 8, Ensure test coverage:
-    - 8.1, Aim for at least 80% code coverage.
-    - 8.2, Use go test -cover to check coverage percentages.
-  - 9, Review and refactor:
-    - 9.1, Ensure tests are concise and focused.
-    - 9.2, Remove any redundant tests.
-    - 9.3, Check that error messages are clear and actionable.
-  - 10, Document any non-obvious test cases:
-    - 10.1, Add comments explaining the purpose of complex tests.
-    - 10.2, Add comments for edge cases. Provide context for edge cases or special scenarios.
+  - 1, Create two test files for each source file:
+    - 1.1, An internal test file (same package, e.g., mypackage_internal_test.go)
+    - 1.2, An external test file (with _test suffix, e.g., mypackage_test.go)
+  - 2, For the internal test file:
+    - 2.1, Use the same package name as the source file.
+    - 2.2, Focus on testing unexported functions and internal behavior.
+  - 3, For the external test file:
+    - 3.1, Use the package name with a _test suffix (e.g., package mypackage_test).
+    - 3.2, Import the package being tested with an alias:
+    ```golang
+    import (
+        "testing"
+        testee "path/to/mypackage"
+    )
+    ```
+    - 3.3, Focus on testing the public API of the package.
+  - 4,In both test files, for each function or method, create a test function:
+    - 4.1, Name it "Test<FunctionName>" for top-level functions.
+    - 4.2, Name it "Test<TypeName>_<MethodName>" for methods.
+  - 5, Implement table-driven tests:
+    - 5.1, Define a slice of anonymous structs containing input and expected output.
+    - 5.2, Use descriptive field names for inputs and expected results.
+  - 6, Write test cases:
+    - 6.1, Include happy path scenarios.
+    - 6.2, Add edge cases (e.g., empty inputs, boundary values).
+    - 6.3, Consider error conditions and how they should be handled.
+  - 7, Use Go's testing package effectively:
+    - 7.1, Employ t.Run() for subtests, naming each subtest clearly.
+    - 7.2, Utilize t.Errorf() for test failures, providing clear error messages.
+    - 7.3, Use t.Helper() for helper functions to improve error reporting.
+  - 8, Implement any necessary setup and teardown:
+    - 8.1, Use t.Cleanup() for resource management when needed.
+    - 8.2, Create any required test fixtures or mocks.
+  - 9, Add benchmarks where appropriate:
+    - 9.1, Create benchmark functions named "Benchmark<FunctionName>".
+    - 9.2, Use b.N for the number of iterations in the benchmark loop.
+  - 10, Ensure test coverage:
+    - 10.1, Aim for at least 80% code coverage.
+    - 10.2, Use go test -cover to check coverage percentages.
+  - 11, Review and refactor:
+    - 11.1, Ensure tests are concise and focused.
+    - 11.2, Remove any redundant tests.
+    - 11.3, Check that error messages are clear and actionable.
+  - 12, Document any non-obvious test cases:
+    - 12.1, Add comments explaining the purpose of complex tests.
+    - 12.2, Provide context for edge cases or special scenarios.
 
   #### CHAIN-OF-THOUGHT
   - Understand the source code's purpose and structure.
-  - Identify critical functionality that needs testing.
-  - Consider various scenarios and edge cases for each function.
-  - Design tests that validate both correct behavior and proper error handling.
-  - Ensure tests are independent and can run in any order.
-  - Reflect on whether the tests provide adequate coverage and confidence in the code's correctness.
+  - Decide which tests belong in the internal test file and which in the external test file.
+  - For external tests, consider how a package user would interact with the public API.
+  - For internal tests, focus on edge cases and complex interactions between unexported functions.
+  - Ensure that the use of the testee alias in external tests improves readability and maintainability.
+  - Reflect on whether the combination of internal and external tests provides comprehensive coverage.
 
   By following these steps and thought process, create thorough and effective unit tests for the following Golang source code:
 

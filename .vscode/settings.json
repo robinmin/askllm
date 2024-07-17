@@ -1,6 +1,7 @@
 {
     "gopls": {
     // "build.allowModfileModifications": true
+        "build.directoryFilters": []
     },
     "go.toolsManagement.checkForUpdates":"off"
 }

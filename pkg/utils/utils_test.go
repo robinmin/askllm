@@ -102,7 +102,7 @@ func TestSaveConfig(t *testing.T) {
 		yamlFile := "/tmp/config_cf689862_25b5_420f_bd39_745e855c00be.yaml"
 		config := &TestConfig{Key: "value"}
 
-		err := testee.SaveConfig[TestConfig](config, yamlFile)
+		err := testee.SaveConfig(config, yamlFile)
 		assert.NoError(t, err)
 
 		configLoaded, err := testee.LoadConfig[TestConfig](yamlFile)

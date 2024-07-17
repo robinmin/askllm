@@ -3,11 +3,13 @@ package log
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
-	"github.com/dusted-go/logging/prettylog"
 	"log/slog"
+
+	"github.com/dusted-go/logging/prettylog"
 )
 
 func InitLogger(logpath string, app_id string, level string, verbose bool) (logFile *os.File) {
@@ -26,6 +28,12 @@ func InitLogger(logpath string, app_id string, level string, verbose bool) (logF
 		filename := fmt.Sprintf("%s/%s_%s.log", logpath, app_id, time.Now().Format("20060102"))
 
 		if logFile == nil {
+			err := ensureDirExists(filename)
+			if err != nil {
+				slog.Error((err.Error()))
+				return nil
+			}
+
 			var err1 error
 			logFile, err1 = os.Create(filename)
 			if err1 != nil {
@@ -56,6 +64,21 @@ func CloseLogger(logFile *os.File) {
 		}
 		logFile = nil
 	}
+}
+
+// ensureDirExists checks if the directory for the given file path exists.
+// If it doesn't exist, it creates the directory.
+// It returns an error if the directory couldn't be created.
+func ensureDirExists(filePath string) error {
+	dir := filepath.Dir(filePath)
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		err := os.MkdirAll(dir, 0755)
+		if err != nil {
+			return fmt.Errorf("failed to create directory %s: %w", dir, err)
+		}
+		// fmt.Printf("Created directory: %s\n", dir)
+	}
+	return nil
 }
 
 func ParseLevel(s string) (slog.Level, error) {

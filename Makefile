@@ -52,10 +52,10 @@ tag: ## Create a new tag
 
 find-untested: ## Find untested source files
 	$(info ******************** Find untested source files ******************** $(VERSION))
-	@find cmd pkg -name "*.go" ! -name "*_test.go" | while read file; do \
+	@find cmd pkg internal -name "*.go" ! -name "*_test.go" | while read file; do \
 		base=$${file%.*}; \
 		if [ ! -f "$${base}_test.go" ]; then \
-			echo "askllm -e chatgpt -p prompts/prompt_generate_unittest_golang.yaml -v $$file"; \
+			echo "askllm -e chatgpt -p prompts/prompt_generate_unittest_golang.yaml -v file_content='$$file'"; \
 		fi; \
 	done
 

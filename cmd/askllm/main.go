@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -13,15 +14,31 @@ import (
 	"github.com/robinmin/askllm/pkg/utils/log"
 )
 
-func main() {
+var (
 	// Define command-line flags
-	engine := flag.String("e", "ollama", "LLM engine (chatgpt, gemini, ollama)")
-	model := flag.String("m", "", "Model for the LLM engine")
-	configFile := flag.String("c", "~/.askllm/config.yaml", "Configuration file")
-	promptFile := flag.String("p", "", "Prompt file")
-	outputFile := flag.String("o", "", "Output file")
-	verbose := flag.Bool("v", false, "verbose output")
+	engine     *string
+	model      *string
+	configFile *string
+	promptFile *string
+	outputFile *string
+	verbose    *bool
+)
 
+func init() {
+	engine = flag.String("e", "ollama", "LLM engine (chatgpt, gemini, ollama)")
+	model = flag.String("m", "", "Model for the LLM engine")
+	configFile = flag.String("c", "~/.askllm/config.yaml", "Locatuon of configuration file")
+	promptFile = flag.String("p", "", "Prompt file")
+	outputFile = flag.String("o", "", "Output file")
+	verbose = flag.Bool("v", false, "verbose output")
+
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage of %s (version %s):\n", os.Args[0], config.VERSION)
+		flag.PrintDefaults()
+	}
+}
+
+func main() {
 	// Parse command-line flags
 	flag.Parse()
 
@@ -39,13 +56,15 @@ func main() {
 		log.Debug(*configFile)
 	}
 
-	// Get prompt
-	// currentDir, err := os.Getwd()
-	// if err != nil {
-	// 	fmt.Println("Error getting current working directory:", err)
-	// 	return
-	// }
-	// log.Infof("currentDir = %v", currentDir)
+	// Get pwd
+	if *verbose {
+		currentDir, err := os.Getwd()
+		if err != nil {
+			fmt.Println("Error getting current working directory:", err)
+			return
+		}
+		log.Debugf("currentDir = %v", currentDir)
+	}
 
 	log.Info("Starting askllm...(engine: " + *engine + ", model: " + *model + " @ " + config.VERSION + ")")
 	payload := strings.Join(flag.Args(), " ")
