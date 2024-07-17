@@ -42,7 +42,7 @@ func TestLoadConfig(t *testing.T) {
 		data := []byte("key: value\n")
 
 		// Create a temporary file
-		yamlFile, err := testee.WriteTempFile("HappyPath", data)
+		yamlFile, err := testee.WriteTempFile("HappyPath", "", data)
 		assert.NoError(t, err)
 
 		// Defer cleanup to ensure it happens even if the function returns early
@@ -73,7 +73,7 @@ func TestLoadConfig(t *testing.T) {
 		data := []byte("invalid yaml")
 
 		// Create a temporary file
-		yamlFile, err := testee.WriteTempFile("ErrorOnUnmarshal", data)
+		yamlFile, err := testee.WriteTempFile("ErrorOnUnmarshal", "", data)
 		assert.NoError(t, err)
 
 		// Defer cleanup to ensure it happens even if the function returns early

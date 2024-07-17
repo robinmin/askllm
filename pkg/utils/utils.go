@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/creasty/defaults"
 	"gopkg.in/yaml.v2"
@@ -52,9 +53,17 @@ func SaveConfig[T any](cfg *T, yamlFile string) error {
 // WriteTempFile creates a temporary file with the given name prefix,
 // writes the provided data to it, and returns the full file path.
 // The caller is responsible for calling CleanupTempFile when done.
-func WriteTempFile(fileNamePrefix string, data []byte) (string, error) {
+func WriteTempFile(prefix string, ext string, data []byte) (string, error) {
+	// Ensure the extension starts with a dot
+	if ext != "" && !strings.HasPrefix(ext, ".") {
+		ext = "." + ext
+	}
+
+	// Create the pattern: prefix + random string + extension
+	pattern := prefix + "*" + ext
+
 	// Create a temporary file
-	tempFile, err := os.CreateTemp("", fileNamePrefix)
+	tempFile, err := os.CreateTemp("", pattern)
 	if err != nil {
 		return "", fmt.Errorf("error creating temporary file: %w", err)
 	}
