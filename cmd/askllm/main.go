@@ -25,7 +25,7 @@ var (
 )
 
 func init() {
-	engine = flag.String("e", "ollama", "LLM engine (chatgpt, gemini, ollama)")
+	engine = flag.String("e", "", "LLM engine (chatgpt, gemini, ollama)")
 	model = flag.String("m", "", "Model for the LLM engine")
 	configFile = flag.String("c", "~/.askllm/config.yaml", "Locatuon of configuration file")
 	promptFile = flag.String("p", "", "Prompt file")
@@ -53,7 +53,7 @@ func main() {
 	defer log.CloseLogger(logFile)
 
 	if *verbose {
-		log.Debug(*configFile)
+		log.Debug("Loading config file from : " + *configFile)
 	}
 
 	// Get pwd
@@ -70,17 +70,18 @@ func main() {
 	payload := strings.Join(flag.Args(), " ")
 	startTime := time.Now()
 
-	// Initialize LLM engine
-	llmEngine, err := llm.NewEngine(*engine, *model, cfg)
+	// load prompt from external file (compatible with old version)
+	pt, promptText, err := prompt.GeneratePrompt(*promptFile, payload)
 	if err != nil {
-		log.Error("Error initializing LLM engine: " + err.Error())
+		log.Error("Error getting prompt: " + err.Error())
 		return
 	}
 
-	// load prompt from external file (compatible with old version)
-	promptText, err := prompt.GeneratePrompt(*promptFile, payload)
+	// // Initialize LLM engine
+	realEngine, realModel := pt.GetParameters(*engine, *model)
+	llmEngine, err := llm.NewEngine(realEngine, realModel, cfg)
 	if err != nil {
-		log.Error("Error getting prompt: " + err.Error())
+		log.Error("Error initializing LLM engine: " + err.Error())
 		return
 	}
 

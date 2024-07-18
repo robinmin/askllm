@@ -22,11 +22,13 @@ import (
 
 // PromptTemplate: This struct represents the overall configuration of the prompt template
 type PromptTemplate struct {
-	Id          string `yaml:"id"`          // Unique identifier for the template
-	Name        string `yaml:"name"`        // Name of the personality analyzer template
-	Description string `yaml:"description"` // Description of the template's functionality
-	Author      string `yaml:"author"`      // Name of the template's author
-	Variables   []struct {
+	Id            string `yaml:"id"`                       // Unique identifier for the template
+	Name          string `yaml:"name"`                     // Name of the personality analyzer template
+	Description   string `yaml:"description"`              // Description of the template's functionality
+	Author        string `yaml:"author"`                   // Name of the template's author
+	DefaultEngine string `yaml:"default_engine,omitempty"` // Default LLM engine to use
+	DefaultModel  string `yaml:"default_model,omitempty"`  // Default LLM model to use
+	Variables     []struct {
 		Name       string `yaml:"name"`       // Name of the variable
 		Vtype      string `yaml:"vtype"`      // Variable type
 		Otype      string `yaml:"otype"`      // Output type of the variable
@@ -153,6 +155,25 @@ func (pt *PromptTemplate) GetPrompt(vars map[string]any) (string, error) {
 	return buffer.String(), nil
 }
 
+func (pt *PromptTemplate) GetParameters(engine string, model string) (string, string) {
+	var tmpEngine string
+	var tmpModel string
+
+	// Use the default engine and model if not specified
+	if len(engine) > 0 {
+		tmpEngine = engine
+	} else {
+		tmpEngine = pt.DefaultEngine
+	}
+	if len(model) > 0 {
+		tmpModel = model
+	} else {
+		tmpModel = pt.DefaultModel
+	}
+
+	return tmpEngine, tmpModel
+}
+
 func getPlaintTextPrompt(promptFile string, input string) (string, error) {
 	log.Info(input)
 	if promptFile != "" {
@@ -208,7 +229,8 @@ func parseQueryString(queryString string) (map[string]any, error) {
 	return queryParams, nil
 }
 
-func GeneratePrompt(promptFile string, payload string) (string, error) {
+func GeneratePrompt(promptFile string, payload string) (*PromptTemplate, string, error) {
+	var pt *PromptTemplate
 	var promptText string
 	var err error
 
@@ -216,10 +238,10 @@ func GeneratePrompt(promptFile string, payload string) (string, error) {
 		fileName := strings.ToLower(promptFile)
 		if strings.HasSuffix(fileName, ".yaml") || strings.HasSuffix(fileName, ".yml") {
 			// load prompt from prompt template YAML file
-			pt, err := NewPromptTemplate(promptFile)
+			pt, err = NewPromptTemplate(promptFile)
 			if err != nil {
 				log.Error("Failed to create instance of PromptTemplate: " + err.Error())
-				return "", err
+				return pt, "", err
 			}
 
 			var vars map[string]any
@@ -227,21 +249,21 @@ func GeneratePrompt(promptFile string, payload string) (string, error) {
 				vars, err = parseQueryString(payload)
 				if err != nil {
 					log.Error("Failed to unmarshal variables from query string: " + err.Error())
-					return "", err
+					return pt, "", err
 				}
 			}
 
 			promptText, err = pt.GetPrompt(vars)
 			if err != nil {
 				log.Error("Error getting prompt: " + err.Error())
-				return "", err
+				return pt, "", err
 			}
 		} else {
 			// load prompt from external file (compatible with old version)
 			promptText, err = getPlaintTextPrompt(promptFile, payload)
 			if err != nil {
 				log.Error("Error getting prompt: " + err.Error())
-				return "", err
+				return pt, "", err
 			}
 		}
 	} else {
@@ -249,5 +271,5 @@ func GeneratePrompt(promptFile string, payload string) (string, error) {
 		promptText = payload
 	}
 
-	return promptText, err
+	return pt, promptText, err
 }

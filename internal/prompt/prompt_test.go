@@ -51,24 +51,26 @@ func TestGeneratePrompt(t *testing.T) {
 		}()
 
 		// Assuming NewPromptTemplate and GetPrompt are mocked to return valid results
-		prompt, err := testee.GeneratePrompt(tmpFile, "content=abc&url_content=123")
+		pt, text, err := testee.GeneratePrompt(tmpFile, "content=abc&url_content=123")
+		assert.NotNil(t, pt)
 		assert.NoError(t, err)
-		assert.NotEmpty(t, prompt)
-		// fmt.Println(prompt)
+		assert.NotEmpty(t, text)
 	})
 
 	t.Run("InvalidYAMLFile", func(t *testing.T) {
 		// Assuming NewPromptTemplate returns an error
-		prompt, err := testee.GeneratePrompt("invalid_prompt.yaml", "key1=value1&key2=value2")
+		pt, text, err := testee.GeneratePrompt("invalid_prompt.yaml", "key1=value1&key2=value2")
+		assert.Nil(t, pt)
 		assert.Error(t, err)
-		assert.Empty(t, prompt)
+		assert.Empty(t, text)
 	})
 
 	t.Run("ValidPlainText", func(t *testing.T) {
 		content := "This is a plain text prompt"
-		prompt, err := testee.GeneratePrompt("", content)
+		pt, text, err := testee.GeneratePrompt("", content)
+		assert.Nil(t, pt)
 		assert.NoError(t, err)
-		assert.Equal(t, content, prompt)
+		assert.Equal(t, content, text)
 	})
 }
 
@@ -78,6 +80,8 @@ id: prompt_web_content_extractor
 name: "Prompt to fetch the web content and summarize it"
 description: "A tiny tool to fetch the web content and summarize it."
 author: "Robin Min"
+default_engine: "chatgpt"
+default_model: "gpt-3.5-turbo"
 variables:
   - name: "content"
     vtype: "string"

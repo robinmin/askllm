@@ -12,9 +12,9 @@ import (
 	"github.com/dusted-go/logging/prettylog"
 )
 
-func InitLogger(logpath string, app_id string, level string, verbose bool) (logFile *os.File) {
+func InitLogger(logpath string, app_id string, level string, verbose bool) *os.File {
 	// Set the custom logger as the default
-	// var logFile *os.File
+	var logFile *os.File
 	lvl, err := ParseLevel(strings.ToUpper(level))
 	if err == nil || verbose {
 		lvl = slog.LevelDebug
@@ -27,22 +27,25 @@ func InitLogger(logpath string, app_id string, level string, verbose bool) (logF
 		// Create a custom JSON logger
 		filename := fmt.Sprintf("%s/%s_%s.log", logpath, app_id, time.Now().Format("20060102"))
 
-		if logFile == nil {
-			err := ensureDirExists(filename)
-			if err != nil {
-				slog.Error((err.Error()))
-				return nil
-			}
-
-			var err1 error
-			logFile, err1 = os.Create(filename)
-			if err1 != nil {
-				slog.Error((err1.Error())) // Handle errors appropriately
-				return nil
-			}
-			logger := slog.New(slog.NewJSONHandler(logFile, opts))
-			slog.SetDefault(logger)
+		err := ensureDirExists(filename)
+		if err != nil {
+			slog.Error((err.Error()))
+			return nil
 		}
+
+		// Open the log file in append mode.
+		// os.O_APPEND: append to the file if it exists
+		// os.O_CREATE: create the file if it doesn't exist
+		// os.O_WRONLY: open the file in write-only mode
+		// 0644: file permissions (read/write for owner, read-only for others)
+		var err1 error
+		logFile, err1 = os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err1 != nil {
+			slog.Error((err1.Error())) // Handle errors appropriately
+			return nil
+		}
+		logger := slog.New(slog.NewJSONHandler(logFile, opts))
+		slog.SetDefault(logger)
 	} else {
 		// logger := slog.New(slog.NewTextHandler(os.Stdout, opts))
 		prettyHandler := prettylog.NewHandler(&slog.HandlerOptions{

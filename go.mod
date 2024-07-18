@@ -4,10 +4,6 @@ go 1.22.0
 
 toolchain go1.22.5
 
-// toolchain go1.22.5
-
-// toolchain go1.22.5
-
 require (
 	github.com/JohannesKaufmann/html-to-markdown v1.6.0
 	github.com/charmbracelet/glamour v0.7.0

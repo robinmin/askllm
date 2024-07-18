@@ -2,6 +2,8 @@ id: prompt_generate_unittest_golang
 name: "Tool to generate unit test for golang"
 description: ""
 author: "Robin Min"
+default_engine: "chatgpt"
+default_model: "gpt-4o"
 variables:
   - name: "content"
     vtype: "string"
@@ -70,6 +72,7 @@ template: |
     - 7.1, Employ t.Run() for subtests, naming each subtest clearly.
     - 7.2, Utilize t.Errorf() for test failures, providing clear error messages.
     - 7.3, Use t.Helper() for helper functions to improve error reporting.
+    - 7.4, Use github.com/stretchr/testify/assert for all assertions.
   - 8, Implement any necessary setup and teardown:
     - 8.1, Use t.Cleanup() for resource management when needed.
     - 8.2, Create any required test fixtures or mocks.
@@ -86,6 +89,7 @@ template: |
   - 12, Document any non-obvious test cases:
     - 12.1, Add comments explaining the purpose of complex tests.
     - 12.2, Provide context for edge cases or special scenarios.
+  - 13, Before outputting, consider to import the necessary packages and make sure no redendent package is imported.
 
   #### CHAIN-OF-THOUGHT
   - Understand the source code's purpose and structure.

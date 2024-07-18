@@ -2,6 +2,8 @@ id: prompt_web_content_extractor
 name: "Prompt to fetch the web content and summarize it"
 description: "A tiny tool to fetch the web content and summarize it."
 author: "Robin Min"
+default_engine: "chatgpt"
+default_model: "gpt-4o"
 variables:
   - name: "content_url"
     vtype: "url"

@@ -2,6 +2,8 @@ id: prompt_perfect_translator
 name: "Best Prectice of language translation"
 description: "Best Prectice of language translation( based on https://baoyu.io/blog/prompt-engineering/my-translator-bot)"
 author: "宝玉"
+default_engine: "chatgpt"
+default_model: "gpt-4o"
 variables:
   - name: "language"
     vtype: "string"
