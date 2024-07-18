@@ -16,6 +16,7 @@ import (
 
 var (
 	// Define command-line flags
+	action     *string
 	engine     *string
 	model      *string
 	configFile *string
@@ -25,6 +26,7 @@ var (
 )
 
 func init() {
+	action = flag.String("a", "client", "subcommand, so far support 'client', 'server'")
 	engine = flag.String("e", "", "LLM engine (chatgpt, gemini, ollama)")
 	model = flag.String("m", "", "Model for the LLM engine")
 	configFile = flag.String("c", "~/.askllm/config.yaml", "Locatuon of configuration file")
@@ -54,10 +56,7 @@ func main() {
 
 	if *verbose {
 		log.Debug("Loading config file from : " + *configFile)
-	}
 
-	// Get pwd
-	if *verbose {
 		currentDir, err := os.Getwd()
 		if err != nil {
 			fmt.Println("Error getting current working directory:", err)
@@ -66,19 +65,34 @@ func main() {
 		log.Debugf("currentDir = %v", currentDir)
 	}
 
+	startTime := time.Now()
 	log.Info("Starting askllm...(engine: " + *engine + ", model: " + *model + " @ " + config.VERSION + ")")
 	payload := strings.Join(flag.Args(), " ")
-	startTime := time.Now()
 
+	switch strings.ToLower(*action) {
+	case "client":
+		runClientAction(*promptFile, payload, *engine, *model, cfg)
+	case "server":
+		runServerAction(*promptFile, payload, *engine, *model, cfg)
+	default:
+		log.Error("Invalid action: " + *action)
+		flag.Usage()
+	}
+
+	elapsedTime := time.Since(startTime)
+	log.Info(fmt.Sprintf("============== DONE ==============(%s)", elapsedTime))
+}
+
+func runClientAction(promptFile string, payload string, engine string, model string, cfg *config.Config) {
 	// load prompt from external file (compatible with old version)
-	pt, promptText, err := prompt.GeneratePrompt(*promptFile, payload)
+	pt, promptText, err := prompt.GeneratePrompt(promptFile, payload)
 	if err != nil {
 		log.Error("Error getting prompt: " + err.Error())
 		return
 	}
 
 	// // Initialize LLM engine
-	realEngine, realModel := pt.GetParameters(*engine, *model)
+	realEngine, realModel := pt.GetParameters(engine, model)
 	llmEngine, err := llm.NewEngine(realEngine, realModel, cfg)
 	if err != nil {
 		log.Error("Error initializing LLM engine: " + err.Error())
@@ -97,7 +111,8 @@ func main() {
 		log.Error("Error handling output: " + err.Error())
 		return
 	}
+}
 
-	elapsedTime := time.Since(startTime)
-	log.Info(fmt.Sprintf("============== DONE ==============(%s)", elapsedTime))
+func runServerAction(promptFile string, payload string, engine string, model string, cfg *config.Config) {
+	log.Error("Not implemented")
 }
