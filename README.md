@@ -71,7 +71,7 @@ For the details of command line options, please run `askllm --help`.
 
 ## Prompt template file
 
-Askllm defined a file layout to relevant prompt information in YAML format. Here comes a sample. It composed with three parts: metadata part, variable part and prompt template part. Once you defined variables in the variables section, then you can use it in the template section in golang text template syntax. It will give you capability to design the reuseable prompt.
+Askllm defined a file layout for the relevant prompt information in YAML format. It composed with three parts: metadata section, variable section and prompt template section. Once you defined variables in the variable section, then you can use them in the template section in golang text template syntax. It will give you the capability to design the reuseable prompt. Here comes a sample.
 
 ```yaml
 id: prompt_yaml_golang_struct
