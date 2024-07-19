@@ -43,6 +43,8 @@ func NewEngine(engineType, model string, cfg *config.Config) (Engine, error) {
 		return NewOllama(tmpModel, enginCfg)
 	case "claude":
 		return NewClaude(tmpModel, enginCfg)
+	case "groq":
+		return NewGroq(tmpModel, enginCfg)
 	default:
 		return nil, fmt.Errorf("unsupported LLM engine: %s", tmpEngine)
 	}

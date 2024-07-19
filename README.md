@@ -43,7 +43,8 @@ Please DO add you `api_key` to enable the inquiries. If you want to use ollama (
 - chatgpt
 - gemini
 - ollama
-- claude.
+- claude
+- groq
 
 The others will be added soon.
 
