@@ -1,6 +1,6 @@
 # ASKLLM
 
-This is a tiny command line tool for you to execute LLM inquiry with prompt or prompt file. The goal is to provide a convinent way to share and reuse prompts, and provide a way to observe the different results from different LLM engines and models with the same prompt.
+This is a tiny command line tool for you to execute LLM inquiry with prompt or prompt file. The goal is to provide a convinent way to share and reuse prompts, and provide a way to observe the different results from different LLM engines or models with the same prompt.
 
 ## Features
 
@@ -51,7 +51,7 @@ The others will be added soon.
 Once everything is ready, then you can use the following command to ask whatever you want to know:
 
 ```bash
-askllm [-e chatgpt] [-m model] [-c config.yaml] [-p prompt_file.md] [-o output.md] [direct prompt instuctions]
+askllm [-a action] [-e chatgpt] [-m model] [-c config.yaml] [-p prompt_file.md] [-o output.md] [direct prompt instuctions]
 
 # use the default model (gemma2) to ask local ollama
 askllm "hello, llm"
@@ -67,7 +67,68 @@ askllm -e claude -m claude-3-sonnet-20240229 "hello, llm"
 
 ```
 
-For the details of command line options, please run `askllm --help` or `askllm [command] --help`.
+For the details of command line options, please run `askllm --help`.
+
+## Prompt template file
+
+Askllm defined a file layout to relevant prompt information in YAML format. Here comes a sample. It composed with three parts: metadata part, variable part and prompt template part. Once you defined variables in the variables section, then you can use it in the template section in golang text template syntax. It will give you capability to design the reuseable prompt.
+
+```yaml
+id: prompt_yaml_golang_struct
+name: "Prompt To Generate Golang Struct Definition for YAML"
+description: "A tiny tool to generate golang struct definition based on YAML file content."
+author: "Robin Min"
+default_engine: "chatgpt"
+default_model: "gpt-4o"
+variables:
+  - name: "yaml_file"
+    vtype: "file"
+    otype: "text"
+    default: ""
+    validation: ""
+template: |
+  I have the following utility generaic function to load information from YAML file and dump the content into YAML file. 
+  ```golang
+  // LoadConfig: load information from YAML file
+  func LoadConfig[T any](yamlFile string) (*T, error) {
+   data, err := os.ReadFile(yamlFile)
+   if err != nil {
+    return nil, err
+   }
+  
+   var config T
+   err = yaml.Unmarshal(data, &config)
+   if err != nil {
+    return nil, err
+   }
+  
+   return &config, nil
+  }
+  
+  // SaveConfig: dump the content into YAML file
+  func SaveConfig[T any](cfg *T, yamlFile string) error {
+   data, err := yaml.Marshal(cfg)
+   if err != nil {
+    return err
+   }
+  
+   err = os.WriteFile(yamlFile, data, 0o644)
+   if err != nil {
+    return err
+   }
+  
+   return nil
+  }
+  ```
+  
+  Now, I have a YAML file with following content. You need to generate a single and compound golang struct definition. So that I can call LoadConfig[T]() and SaveConfig[T]() with this new type for further action.
+  DO NOT forget to add inline comment for each field. Here's the yaml content:
+
+  ```YAML
+  {{ .yaml_file }}
+  ```
+
+```
 
 ## Reference
 
