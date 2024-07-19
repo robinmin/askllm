@@ -120,14 +120,11 @@ template: |
    return nil
   }
   ```
-  
   Now, I have a YAML file with following content. You need to generate a single and compound golang struct definition. So that I can call LoadConfig[T]() and SaveConfig[T]() with this new type for further action.
   DO NOT forget to add inline comment for each field. Here's the yaml content:
-
   ```YAML
   {{ .yaml_file }}
   ```
-
 ```
 
 ## Reference
