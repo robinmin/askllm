@@ -155,7 +155,7 @@ func (pt *PromptTemplate) GetPrompt(vars map[string]any) (string, error) {
 	return buffer.String(), nil
 }
 
-func (pt *PromptTemplate) GetParameters(engine string, model string) (string, string) {
+func (pt *PromptTemplate) GetParameters(engine string, model string, defaultEngine string, defaultModel string) (string, string) {
 	var tmpEngine string
 	var tmpModel string
 
@@ -163,12 +163,22 @@ func (pt *PromptTemplate) GetParameters(engine string, model string) (string, st
 	if len(engine) > 0 {
 		tmpEngine = engine
 	} else {
-		tmpEngine = pt.DefaultEngine
+		if len(pt.DefaultEngine) > 0 {
+			tmpEngine = pt.DefaultEngine
+		} else {
+			tmpEngine = defaultEngine
+		}
 	}
+
+	// Use the default model if not specified
 	if len(model) > 0 {
 		tmpModel = model
 	} else {
-		tmpModel = pt.DefaultModel
+		if len(pt.DefaultModel) > 0 {
+			tmpModel = pt.DefaultModel
+		} else {
+			tmpModel = defaultModel
+		}
 	}
 
 	return tmpEngine, tmpModel
@@ -218,7 +228,7 @@ func parseQueryString(queryString string) (map[string]any, error) {
 
 	query, err := url.ParseQuery(queryString)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing query string: %w", err)
+		return nil, fmt.Errorf("error parsing query string: %v", err)
 	}
 
 	queryParams := make(map[string]any)
@@ -268,6 +278,7 @@ func GeneratePrompt(promptFile string, payload string) (*PromptTemplate, string,
 		}
 	} else {
 		// load prompt from command line directly
+		pt = &PromptTemplate{}
 		promptText = payload
 	}
 
