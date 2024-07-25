@@ -68,7 +68,7 @@ func TestGeneratePrompt(t *testing.T) {
 	t.Run("ValidPlainText", func(t *testing.T) {
 		content := "This is a plain text prompt"
 		pt, text, err := testee.GeneratePrompt("", content)
-		assert.Nil(t, pt)
+		assert.NotNil(t, pt)
 		assert.NoError(t, err)
 		assert.Equal(t, content, text)
 	})
