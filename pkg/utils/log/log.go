@@ -69,6 +69,10 @@ func CloseLogger(logFile *os.File) {
 	}
 }
 
+func GetDefaultLogger() *slog.Logger {
+	return slog.Default()
+}
+
 // ensureDirExists checks if the directory for the given file path exists.
 // If it doesn't exist, it creates the directory.
 // It returns an error if the directory couldn't be created.
@@ -77,7 +81,7 @@ func ensureDirExists(filePath string) error {
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		err := os.MkdirAll(dir, 0755)
 		if err != nil {
-			return fmt.Errorf("failed to create directory %s: %w", dir, err)
+			return fmt.Errorf("failed to create directory %s: %v", dir, err)
 		}
 		// fmt.Printf("Created directory: %s\n", dir)
 	}
