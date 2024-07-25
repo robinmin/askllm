@@ -5,7 +5,7 @@ This is a tiny command line tool for you to execute LLM inquiry with prompt or p
 ## Features
 
 - [x] Command AI tool.
-- [x] LangChain Support, so far suppor chatgpt, gemini, ollama and claude.
+- [x] LangChain Support, so far suppor chatgpt, gemini, ollama, groq and claude.
 - [x] Prompt Template Support with Golang text/template syntax(yaml file only), or plaint text as old version.
 
 ## Installation
