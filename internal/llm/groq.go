@@ -1,14 +1,15 @@
 package llm
 
 import (
-	"bytes"
+	// "bytes"
 	"context"
-	"encoding/json"
+	// "encoding/json"
 	"fmt"
-	"io"
-	"net/http"
+	// "io"
+	// "net/http"
 
 	"github.com/robinmin/askllm/internal/config"
+	"github.com/robinmin/askllm/pkg/utils"
 )
 
 type Groq struct {
@@ -16,7 +17,9 @@ type Groq struct {
 	context       context.Context
 	apiKey        string
 	orgnizationId string
-	baseURL       string
+	chatURL       string
+	modelURL      string
+	models        []string // List of all available models
 }
 
 type chatCompletionRequest struct {
@@ -48,7 +51,8 @@ func NewGroq(model string, cfg config.LLMEngineConfig) (*Groq, error) {
 		context:       ctx,
 		apiKey:        cfg.APIKey,
 		orgnizationId: cfg.OrgnizationId,
-		baseURL:       cfg.BaseURL + "/chat/completions",
+		chatURL:       cfg.BaseURL + "/chat/completions",
+		modelURL:      cfg.BaseURL + "/models",
 	}, nil
 }
 
@@ -60,41 +64,14 @@ func (g *Groq) Query(prompt string) (string, error) {
 		Model: g.model,
 	}
 
-	jsonBody, err := json.Marshal(reqBody)
-	if err != nil {
-		return "", fmt.Errorf("error marshaling request body: %w", err)
+	headers := map[string]string{
+		"Authorization": "Bearer " + g.apiKey,
+		"Content-Type":  "application/json",
 	}
 
-	req, err := http.NewRequestWithContext(g.context, "POST", g.baseURL, bytes.NewBuffer(jsonBody))
+	chatResp, err := utils.APIPost[chatCompletionRequest, chatCompletionResponse](g.chatURL, reqBody, headers)
 	if err != nil {
-		return "", fmt.Errorf("error creating request: %w", err)
-	}
-
-	req.Header.Set("Authorization", "Bearer "+g.apiKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", fmt.Errorf("error sending request: %w", err)
-	}
-	defer func() {
-		_ = resp.Body.Close()
-	}()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", fmt.Errorf("error reading response body: %w", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
-	}
-
-	var chatResp chatCompletionResponse
-	err = json.Unmarshal(body, &chatResp)
-	if err != nil {
-		return "", fmt.Errorf("error unmarshaling response: %w", err)
+		return "", fmt.Errorf("error fetching models: %v", err)
 	}
 
 	if len(chatResp.Choices) == 0 {
@@ -102,4 +79,52 @@ func (g *Groq) Query(prompt string) (string, error) {
 	}
 
 	return chatResp.Choices[0].Message.Content, nil
+}
+
+type GroqModel struct {
+	ID            string `json:"id"`
+	Object        string `json:"object"`
+	Created       int64  `json:"created"`
+	OwnedBy       string `json:"owned_by"`
+	Active        bool   `json:"active"`
+	ContextWindow int    `json:"context_window"`
+}
+
+type GroqModelListResponse struct {
+	Object string      `json:"object"`
+	Data   []GroqModel `json:"data"`
+}
+
+func (g *Groq) ListAllModelsCore() ([]GroqModel, error) {
+	headers := map[string]string{
+		"Authorization": "Bearer " + g.apiKey,
+		"Content-Type":  "application/json",
+	}
+
+	response, err := utils.APIGet[GroqModelListResponse](g.modelURL, headers)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching models: %v", err)
+	}
+
+	if response == nil {
+		return nil, fmt.Errorf("received nil response")
+	}
+
+	return response.Data, nil
+}
+
+func (g *Groq) ListAllModels() ([]string, error) {
+	if len(g.models) > 0 {
+		return g.models, nil
+	}
+	models, err := g.ListAllModelsCore()
+	if err != nil {
+		return nil, err
+	}
+
+	g.models = []string{}
+	for _, model := range models {
+		g.models = append(g.models, model.ID)
+	}
+	return g.models, nil
 }
