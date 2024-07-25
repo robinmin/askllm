@@ -8,13 +8,14 @@ import (
 )
 
 const (
-	VERSION = "0.1.7"
+	VERSION = "0.1.8"
 )
 
 type Config struct {
 	Sys struct {
-		LogPath  string `yaml:"log_path,omitempty"`
-		LogLevel string `yaml:"log_level,omitempty"`
+		LogPath       string `yaml:"log_path,omitempty"`
+		LogLevel      string `yaml:"log_level,omitempty"`
+		DefaultEngine string `yaml:"default_engine,omitempty"` // Default LLM engine to use
 	} `yaml:"sys"`
 	LLMEngines map[string]LLMEngineConfig `yaml:"llm_engines"`
 }
@@ -23,7 +24,9 @@ type LLMEngineConfig struct {
 	APIKey        string `yaml:"api_key"`
 	Model         string `yaml:"model"`
 	BaseURL       string `yaml:"base_url,omitempty"`
-	OrgnizationId string `yaml:"organization_id,omitempty"` // So far, only avaliable for chatgpt
+	OrgnizationId string `yaml:"organization_id,omitempty"` // So far, only avaliable for chatgpt and groq
+	ExtraKey      string `yaml:"extra_key,omitempty"`       // So far, only avaliable for gemini
+	ExtraURL      string `yaml:"extra_url,omitempty"`       // So far, only avaliable for gemini, ollama
 }
 
 func Load(filename string) (*Config, error) {
