@@ -2,12 +2,11 @@ package utils
 
 import (
 	"fmt"
+	"github.com/creasty/defaults"
+	"gopkg.in/yaml.v2"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/creasty/defaults"
-	"gopkg.in/yaml.v2"
 )
 
 // create instance and load default values which defined in the struct definition
@@ -65,7 +64,7 @@ func WriteTempFile(prefix string, ext string, data []byte) (string, error) {
 	// Create a temporary file
 	tempFile, err := os.CreateTemp("", pattern)
 	if err != nil {
-		return "", fmt.Errorf("error creating temporary file: %w", err)
+		return "", fmt.Errorf("error creating temporary file: %v", err)
 	}
 	// defer tempFile.Close()
 	defer func() {
@@ -74,13 +73,13 @@ func WriteTempFile(prefix string, ext string, data []byte) (string, error) {
 
 	// Write data to the file
 	if _, err := tempFile.Write(data); err != nil {
-		return "", fmt.Errorf("error writing to temporary file: %w", err)
+		return "", fmt.Errorf("error writing to temporary file: %v", err)
 	}
 
 	// Get the full file path
 	fullPath, err := filepath.Abs(tempFile.Name())
 	if err != nil {
-		return "", fmt.Errorf("error getting absolute file path: %w", err)
+		return "", fmt.Errorf("error getting absolute file path: %v", err)
 	}
 
 	return fullPath, nil
@@ -91,7 +90,7 @@ func WriteTempFile(prefix string, ext string, data []byte) (string, error) {
 func CleanupTempFile(fileName string) error {
 	err := os.Remove(fileName)
 	if err != nil && !os.IsNotExist(err) {
-		return fmt.Errorf("error removing temporary file: %w", err)
+		return fmt.Errorf("error removing temporary file: %v", err)
 	}
 	return nil
 }
