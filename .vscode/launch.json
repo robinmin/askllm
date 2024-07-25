@@ -8,7 +8,8 @@
         "program": "${workspaceFolder}/cmd/askllm/main.go",
         // "args": ["-p", "/Users/minlongbing/Projects2/askllm/prompts/first_ai_template.yaml", "user_name=karl max"],
         // "args": ["-p", "/Users/minlongbing/Projects2/askllm/prompts/prompt_yaml_golang_struct.yaml", "yaml_file=/Users/minlongbing/Projects2/askllm/config.example.yaml"],
-        "args": ["-e", "gemini", "-p", "/Users/minlongbing/Projects2/askllm/prompts/prompt_perfect_translator.yaml", "content='hello, world! This is Robin Min frm Mars.'"],
+        // "args": ["-e", "gemini", "-p", "/Users/minlongbing/Projects2/askllm/prompts/prompt_perfect_translator.yaml", "content='hello, world! This is Robin Min frm Mars.'"],
+        "args": ["-a","models"],
         "showLog": true,
         "console": "integratedTerminal"
     }]
