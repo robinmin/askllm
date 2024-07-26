@@ -40,11 +40,11 @@ mkdir ~/.askllm/ && cp config.example.yaml ~/.askllm/config.yaml
 
 Please DO add you `api_key` to enable the inquiries. If you want to use ollama (by default), please do not forget to install it. Please refer to [here](https://github.com/ollama/ollama) for details. So far askllm only supports the following LLM engines:
 
-- chatgpt
-- gemini
-- ollama
-- claude
-- groq
+- [chatgpt](https://chatgpt.com/)
+- [gemini](https://gemini.google.com/)
+- [ollama](https://ollama.com/)
+- [claude](https://claude.ai/)
+- [groq](https://groq.com/)
 
 The others will be added soon.
 
