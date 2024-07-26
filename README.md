@@ -87,7 +87,7 @@ variables:
     default: ""
     validation: ""
 template: |
-  I have the following utility generaic function to load information from YAML file and dump the content into YAML file. 
+  I have the following utility generic function to load information from YAML file and dump the content into YAML file. 
 
   // LoadConfig: load information from YAML file
   func LoadConfig[T any](yamlFile string) (*T, error) {

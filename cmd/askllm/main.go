@@ -30,7 +30,7 @@ func init() {
 	engine = flag.String("e", "", "LLM engine (chatgpt, gemini, ollama, claude, groq)")
 	model = flag.String("m", "", "Model for the LLM engine")
 	configFile = flag.String("c", "~/.askllm/config.yaml", "Locatuon of configuration file")
-	promptFile = flag.String("p", "", "Prompt file")
+	promptFile = flag.String("p", "", "Prompt file or prompt text")
 	outputFile = flag.String("o", "", "Output file")
 	verbose = flag.Bool("v", false, "verbose output")
 
